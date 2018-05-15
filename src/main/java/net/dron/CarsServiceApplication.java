@@ -1,12 +1,12 @@
-package net.dron.avtoservice;
+package net.dron;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AvtoserviceApplication {
+public class CarsServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AvtoserviceApplication.class, args);
+        SpringApplication.run(CarsServiceApplication.class, args);
     }
 }

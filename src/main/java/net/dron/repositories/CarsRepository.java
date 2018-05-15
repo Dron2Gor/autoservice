@@ -1,6 +1,6 @@
-package net.dron.avtoservice.repositoties;
+package net.dron.repositories;
 
-import net.dron.avtoservice.entyties.Car;
+import net.dron.domain.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

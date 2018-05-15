@@ -1,4 +1,4 @@
-package net.dron.avtoservice.entyties;
+package net.dron.domain;
 
 
 import lombok.AllArgsConstructor;
