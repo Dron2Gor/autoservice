@@ -2,8 +2,8 @@ package net.dron.controllers;
 
 import net.dron.domain.Car;
 import net.dron.repositories.CarsRepository;
-import net.dron.services.CarServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,22 +15,18 @@ public class CarsDBController {
     @Autowired
     private CarsRepository carsRepository;
 
-    @Autowired
-    CarServices carServices;
-
-
-    @RequestMapping("/all")
+    @RequestMapping(method = RequestMethod.GET, value = "/all")
     public List<Car> getAllCars() {
-        return  carsRepository.findAll();
+        return carsRepository.findAll();
     }
 
-    @RequestMapping("/country/{country}")
+    @RequestMapping(method = RequestMethod.GET, value = "/country/{country}")
     public List<Car> findByCountry(@PathVariable String country) {
 
         return carsRepository.findCarsByCountry(country);
     }
 
-    @RequestMapping("/model/{model}")
+    @RequestMapping(method = RequestMethod.GET, value = "/model/{model}")
     public List<Car> findByModel(@PathVariable String model) {
         return carsRepository.findCarsByModel(model);
     }
@@ -41,74 +37,52 @@ public class CarsDBController {
         return carsRepository.findCarsByMark(mark);
     }
 
-    @RequestMapping("/color/{color}")
+    @RequestMapping(method = RequestMethod.GET, value = "/color/{color}")
     public List<Car> findByColor(@PathVariable String color) {
         return carsRepository.findCarsByColor(color);
     }
+
     @RequestMapping("/year/{year}")
     public List<Car> findByYearMade(@PathVariable Integer year) {
         return carsRepository.findCarsByYearMade(year);
     }
 
-    @RequestMapping(value = "/id/{id}")
+    @RequestMapping(method =RequestMethod.GET, value = "/{id}")
 
-    public Car findById(@PathVariable Integer id ) {
+    public Car findById(@PathVariable Integer id) {
 
-        return carServices.getCarById(id);
+        Car car=null;
 
-    }
-    @RequestMapping("/new/{mark}/{model}/{color}/{year}/{country}")
-    public Car addNewCar(@PathVariable String mark, @PathVariable String model, @PathVariable String color,
-                         @PathVariable int year, @PathVariable String country) {
-
-        Car car = new Car();
-        car.setModel(model);
-        car.setMark(mark);
-        car.setColor(color);
-        car.setYearMade(year);
-        car.setCountry(country);
-
-        carsRepository.save(car);
-
+        if (carsRepository.findById(id).isPresent())
+            car=carsRepository.findById(id).get();
         return car;
     }
 
-    @RequestMapping("/delete/{id}")
-    public Car deleteById(@PathVariable int id) {
-        Car car = carServices.getCarById(id);
+    @RequestMapping(method = RequestMethod.POST, value= "/new")
+    @ResponseBody
+    public Car addNewCar(@RequestBody Car car){
+
+        carsRepository.save(car);
+        return  car;
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/update")
+    @ResponseBody
+    public Car updateCar(@RequestBody Car car){
+
+        carsRepository.save(car);
+        return  car;
+
+    }
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deleteCar(@PathVariable int id){
         carsRepository.deleteById(id);
-        return car;
-    }
-    @RequestMapping("/update")
-    public Car updateCarById (@RequestParam int id,
-                              @RequestParam (required = false) String mark,
-                              @RequestParam (required = false) String model,
-                              @RequestParam (required = false) String color,
-                              @RequestParam (required = false) Integer year,
-                              @RequestParam (required = false) String country) {
-        Car car = carServices.getCarById(id);
-
-        if (model!=null)
-        car.setModel(model);
-        if (mark!=null)
-        car.setMark(mark);
-        if(color!=null)
-        car.setColor(color);
-        if (year!=null)
-        car.setYearMade(year);
-        if (country!=null)
-        car.setCountry(country);
-
-        carsRepository.save(car);
-
-        return car;
+        return ResponseEntity.ok().body("Car №"+id+" was deleted.");
     }
 
-    @RequestMapping("/test")
-    public Car findTest() {
-        return new Car(1, "lada", "06", "green", 2010, "russia");
 
-    }
+
 
 
 }
